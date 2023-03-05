@@ -1,10 +1,19 @@
-import * as express from 'express';
-import apiRouter from './routes';
+import App from './app';
+import AuthRoute from './routes/auth.route';
+import IndexRoute from './routes/index.route';
+import BOPRoute from './routes/bop.route';
+import UsersRoute from './routes/users.route';
+import RecruitmentRoute from './routes/recruitment.route';
+import validateEnv from './utils/validateEnv';
 
-const app = express();
+validateEnv();
 
-app.use(express.static('public'));
-app.use(apiRouter);
+const app = new App([
+    new IndexRoute(),
+    new UsersRoute(),
+    new AuthRoute(),
+    new RecruitmentRoute(),
+    new BOPRoute()
+]);
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Server listening on port: ${port}`));
+app.listen();

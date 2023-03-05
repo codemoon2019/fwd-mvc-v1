@@ -6,3 +6,8 @@ node_modules/
 # production bundles
 dist/
 public/js/app.js
+logs/
+package-lock.json
+
+.env
+.env.development.local
