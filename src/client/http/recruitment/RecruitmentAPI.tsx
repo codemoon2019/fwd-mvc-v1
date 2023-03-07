@@ -11,7 +11,7 @@ export const postApplication = async (recruitData: RecruitmentFormData) => {
     })
 
     return axios
-        .post(`api/recruitment`, recruitData)
+        .post(`/smart-recruitment/api/recruitment`, recruitData)
         .then((response) => {
             const data = response.data;
             recruitData["id"] = data
@@ -28,7 +28,7 @@ export const postApplication = async (recruitData: RecruitmentFormData) => {
 
 export const assignAgent = (id: number, agent: string) => {
     axios
-        .put(`api/recruitment/assign-agent/${id}`, {recruiter: agent})
+        .put(`/smart-recruitment/api/recruitment/assign-agent/${id}`, {recruiter: agent})
         .then((response) => {
             const data = response.data;
             return response
@@ -43,7 +43,7 @@ export const assignAgent = (id: number, agent: string) => {
 
 export const markPresent = async (id: number) => {
     return axios
-        .put(`api/recruitment/mark-present/${id}`)
+        .put(`/smart-recruitment/api/recruitment/mark-present/${id}`)
         .then((response) => {
             const data = response.data;
             return response
@@ -59,7 +59,7 @@ export const markPresent = async (id: number) => {
 
 export const getRecruits = () => {
     axios
-    .get(`api/recruitment/list`)
+    .post(`/smart-recruitment/api/recruitment/list`)
     .then((response) => {
       const data = response.data;
       localStorage.removeItem('recruitList');
@@ -77,7 +77,7 @@ export const getRecruits = () => {
 
 export const getAssignedRecruits = () => {
     axios
-    .get(`api/recruitment/assigned-list`)
+    .post(`/smart-recruitment/api/recruitment/assigned-list`)
     .then((response) => {
       const data = response.data;
       localStorage.removeItem('recruitAssignedList');

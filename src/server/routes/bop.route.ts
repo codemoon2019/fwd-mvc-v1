@@ -5,7 +5,7 @@ import { Routes } from './../interfaces/routes.interface';
 import validationMiddleware from './../middlewares/validation.middleware';
 
 class BOPRoute implements Routes {
-  public path = '/api/bop';
+  public path = '/smart-recruitment/api/bop';
   public router = Router();
   public bopController = new BOPController();
 
@@ -15,8 +15,8 @@ class BOPRoute implements Routes {
 
   private initializeRoutes() {
     this.router.post(`${this.path}`, validationMiddleware(CreateBOPDTO, 'body'), this.bopController.createNewBOP);
-    this.router.get(`${this.path}/list`, this.bopController.getAllBops);
-    this.router.get(`${this.path}/list-dropdown`, this.bopController.getAllBopFilterByCurrentDate);
+    this.router.post(`${this.path}/list`, this.bopController.getAllBops);
+    this.router.post(`${this.path}/list-dropdown`, this.bopController.getAllBopFilterByCurrentDate);
   }
 }
 

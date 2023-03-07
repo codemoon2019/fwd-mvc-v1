@@ -4,7 +4,7 @@ import Swal from 'sweetalert2'
 
 export const createBop = (bopData: BOP) => {
     axios
-    .post(`/api/bop`, bopData)
+    .post(`/smart-recruitment/api/bop`, bopData)
     .then((response) => {
         const data = response.data;
         return data.data
@@ -19,7 +19,7 @@ export const createBop = (bopData: BOP) => {
 
 export const getBops = () => {
     axios
-    .get(`/api/bop/list`)
+    .post(`/smart-recruitment/api/bop/list`)
     .then((response) => {
       const data = response.data;
       localStorage.removeItem('bopList');
@@ -38,7 +38,7 @@ export const getBops = () => {
 
 export const getBopDataForDropdown = () => {
     axios
-    .get(`/api/bop/list-dropdown`)
+    .post(`/smart-recruitment/api/bop/list-dropdown`)
     .then((response) => {
       const initData = response.data;
       const data = initData.data;
