@@ -3,7 +3,7 @@ import IndexController from './../controllers/index.controller';
 import { Routes } from './../interfaces/routes.interface';
 
 class IndexRoute implements Routes {
-  public path = '/api';
+  public path = '/smart-recruitment/api';
   public router = Router();
   public indexController = new IndexController();
 
