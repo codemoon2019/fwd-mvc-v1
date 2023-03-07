@@ -21,7 +21,8 @@ const serverConfig = {
 	},
 	output: {
 		filename: 'server.js',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve(__dirname, 'dist'),
+		publicPath: '/smart-recruitment',
 	},
 	target: 'node',
 	node: {
@@ -55,7 +56,8 @@ const clientConfig = {
 	},
 	output: {
 		filename: 'app.js',
-		path: path.resolve(__dirname, 'public/js')
+		path: path.resolve('public/js'),
+		publicPath: '/smart-recruitment',
 	}
 };
 

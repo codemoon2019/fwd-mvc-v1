@@ -61,13 +61,13 @@ class App {
   }
 
   private initializeRoutes(routes: Routes[]) {
-    this.app.use(express.static('public'));
+    this.app.use('/smart-recruitment', express.static('public'));
     this.app.get('*', (req, res) => {
       res.sendFile(path.resolve('public/index.html'));
     });
     routes.forEach(route => {
       console.log(route)
-      this.app.use('/', route.router);
+      this.app.use('api/', route.router);
     });
   }
 
