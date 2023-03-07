@@ -11,7 +11,7 @@ const serverConfig = {
 				loader: 'ts-loader',
 				exclude: /node_modules/,
 				options: {
-					configFile: 'tsconfig.json'
+					configFile: 'server/tsconfig.json'
 				}
 			}
 		]
@@ -21,7 +21,8 @@ const serverConfig = {
 	},
 	output: {
 		filename: 'server.js',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve(__dirname, 'dist'),
+		publicPath: '/smart-recruitment',
 	},
 	target: 'node',
 	node: {
@@ -41,7 +42,7 @@ const clientConfig = {
 				loader: 'ts-loader',
 				exclude: /node_modules/,
 				options: {
-					configFile: 'tsconfig.client.json'
+					configFile: 'client/tsconfig.json'
 				}
 			},
 			{
@@ -55,7 +56,8 @@ const clientConfig = {
 	},
 	output: {
 		filename: 'app.js',
-		path: path.resolve(__dirname, 'public/js')
+		path: path.resolve('public/js'),
+		publicPath: '/smart-recruitment',
 	}
 };
 

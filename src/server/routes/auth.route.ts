@@ -7,7 +7,7 @@ import authMiddleware from './../middlewares/auth.middleware';
 import validationMiddleware from './../middlewares/validation.middleware';
 
 class AuthRoute implements Routes {
-  public path = '/api';
+  public path = '/smart-recruitment/api';
   public router = Router();
   public authController = new AuthController();
 

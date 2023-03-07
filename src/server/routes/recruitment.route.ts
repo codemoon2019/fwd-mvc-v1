@@ -5,7 +5,7 @@ import { Routes } from './../interfaces/routes.interface';
 import validationMiddleware from './../middlewares/validation.middleware';
 
 class RecruitmentRoute implements Routes {
-  public path = '/api/recruitment';
+  public path = '/smart-recruitment/api/recruitment';
   public router = Router();
   public recruitmentController = new RecruitmentController();
 

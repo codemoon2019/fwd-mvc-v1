@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 export const login = (data: Auth) => {
 
     axios
-    .post(`/api/login`, data)
+    .post(`api/login`, data)
     .then((response) => {
         const data = response.data;
         localStorage.removeItem('userData');

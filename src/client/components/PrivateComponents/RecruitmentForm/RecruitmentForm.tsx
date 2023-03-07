@@ -222,16 +222,15 @@ const Login: React.FC = () => {
 
   React.useEffect(() => {
     setProvince(Object.keys(data.data))
-    async function fetchDataAsync() {
+    /*async function fetchDataAsync() {
       await getBopDataForDropdown();
       const savedArray = JSON.parse(localStorage.getItem('bopListDropdown') || '[]');
       setBopList(savedArray);
       console.log(bopList)
     }
-   const interval = setInterval(() => {
-      fetchDataAsync();
-    }, 1000);
-    return () => clearInterval(interval)
+
+    fetchDataAsync();*/
+
 
   }, [])
 
