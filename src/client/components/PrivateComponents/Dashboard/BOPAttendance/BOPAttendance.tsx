@@ -45,7 +45,9 @@ const BOPAttendance: React.FC = () => {
 
   const [openModal, setOpenModal] = React.useState(false);
   const [recruitID, setRecruitID] = React.useState(0);
-  const [agent, setAgent] = React.useState("");
+
+  const [value, setValue] = React.useState<string>('');
+  const [inputValue, setInputValue] = React.useState('');
 
   const handleOpen = (id: number) => {
     setOpenModal(false);
@@ -68,6 +70,13 @@ const BOPAttendance: React.FC = () => {
       }
     })
   };
+
+  const onClickFilter = async () => {
+    await getRecruits(value).then((response: any) => {
+      setRowsData(rowsFunction(response))
+    })
+  }
+
   const handleClose = () => setOpenModal(false);
 
   const [page, setPage] = React.useState(0);
@@ -187,7 +196,7 @@ const BOPAttendance: React.FC = () => {
 
   React.useEffect(() => {
     async function fetch(){
-      await getRecruits().then((response: any) => {
+      await getRecruits(value).then((response: any) => {
         setRowsData(rowsFunction(response))
       })
       await getBops().then((response: any) => {
@@ -260,6 +269,14 @@ const BOPAttendance: React.FC = () => {
                 disablePortal
                 id="bop"
                 options={dropDownList}
+                onChange={(event: any, newValue: string) => {
+                  setValue(newValue);
+                }}
+                inputValue={inputValue}
+                onInputChange={(event, newInputValue) => {
+                  setInputValue(newInputValue);
+                }}
+                value={value}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -277,6 +294,7 @@ const BOPAttendance: React.FC = () => {
                 variant="outlined"
                 color="primary"
                 fullWidth
+                onClick={onClickFilter}
               >
               Filter List
               </Button>

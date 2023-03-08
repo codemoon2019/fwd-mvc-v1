@@ -22,11 +22,12 @@ import {
   getRecruits, assignAgent
 } from '../../../../http/recruitment/RecruitmentAPI';
 import {
-  getBops, 
+  getBops,
 } from '../../../../http/bop/BopAPI';
 import Swal from 'sweetalert2'
 import Moment from 'moment';
 import { useStyles } from "./Styles";
+import { datePickerValueManager } from "@mui/x-date-pickers/DatePicker/shared";
 
 const style = {
   position: "absolute" as "absolute",
@@ -49,6 +50,9 @@ const RecruitList: React.FC = () => {
   const [recruitID, setRecruitID] = React.useState(0);
   const [agent, setAgent] = React.useState("");
 
+  const [value, setValue] = React.useState<string>('');
+  const [inputValue, setInputValue] = React.useState('');
+
   const handleOpen = (id: number) => {
     setOpenModal(true)
     setRecruitID(id)
@@ -60,6 +64,12 @@ const RecruitList: React.FC = () => {
 
   const [rowsData, setRowsData] = React.useState([]);
   const [dropDownList, setDataDropdownList] = React.useState([]);
+
+  const onClickFilter = async () => {
+    await getRecruits(value).then((response: any) => {
+      setRowsData(rowsFunction(response))
+    })
+  }
 
   const updateAgent = async () => {
     setOpenModal(false);
@@ -74,7 +84,7 @@ const RecruitList: React.FC = () => {
       preConfirm: async () => {
         try {
           await assignAgent(recruitID, agent)
-          await getRecruits().then((response: any) => {
+          await getRecruits(value).then((response: any) => {
             console.log(response)
             setRowsData(rowsFunction(response))
           })
@@ -189,8 +199,8 @@ const RecruitList: React.FC = () => {
   }
 
   React.useEffect(() => {
-    async function fetch(){
-      await getRecruits().then((response: any) => {
+    async function fetch() {
+      await getRecruits(value).then((response: any) => {
         setRowsData(rowsFunction(response))
       })
       await getBops().then((response: any) => {
@@ -220,11 +230,11 @@ const RecruitList: React.FC = () => {
     return newArray;
   }
 
-  
+
   const createBopDropdownData = (data: []) => {
     let newArray: any = [];
-    if(data.length > 0){
-      for(let i = 0; i < data.length; i++){
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
         newArray.push(data[i]['name'])
       }
     }
@@ -275,7 +285,7 @@ const RecruitList: React.FC = () => {
               <Grid container spacing={2}>
                 <Grid item md={12}>
                   <FormControl margin="normal" fullWidth>
-                    <Autocomplete
+                  <Autocomplete
                       disablePortal
                       id="combo-box-demo"
                       inputValue={agent}
@@ -334,17 +344,25 @@ const RecruitList: React.FC = () => {
         <Grid spacing={2} container>
           <Grid item xs={12} md={3}>
             <FormControl margin="normal" fullWidth>
-              <Autocomplete
-                disablePortal
-                id="bop"
-                options={dropDownList}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Filter by BOP"
-                  />
-                )}
-              />
+                <Autocomplete
+                      disablePortal
+                      id="bop"
+                      options={dropDownList}
+                      onChange={(event: any, newValue: string) => {
+                        setValue(newValue);
+                      }}
+                      inputValue={inputValue}
+                      onInputChange={(event, newInputValue) => {
+                        setInputValue(newInputValue);
+                      }}
+                      value={value}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Filter by BOP"
+                        />
+                      )}
+                    />
             </FormControl>
           </Grid>
           <Grid item xs={12} md={2}>
@@ -355,8 +373,9 @@ const RecruitList: React.FC = () => {
                 variant="outlined"
                 color="primary"
                 fullWidth
+                onClick={onClickFilter}
               >
-              Filter List
+                Filter List
               </Button>
             </FormControl>
           </Grid>

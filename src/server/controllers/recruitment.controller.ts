@@ -19,7 +19,7 @@ class RecruitmentController {
   
   public getAllRecruits = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const findAllRecruits = await this.recruitmentService.findAllRecruits();
+      const findAllRecruits = await this.recruitmentService.findAllRecruits(req.body.bop);
 
       res.status(200).json({ data: findAllRecruits, message: 'findAllRecruits' });
     } catch (error) {

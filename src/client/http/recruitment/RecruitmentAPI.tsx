@@ -56,9 +56,9 @@ export const markPresent = async (id: number) => {
         });
 } 
 
-export const getRecruits = async () => {
+export const getRecruits = async (bop: string) => {
     try {
-        const response = await axios.post(`/smart-recruitment/api/recruitment/list`)
+        const response = await axios.post(`/smart-recruitment/api/recruitment/list`, {bop: bop})
         return response.data.data
     } catch (error) {
         return error

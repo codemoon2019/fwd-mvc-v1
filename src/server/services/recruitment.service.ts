@@ -23,8 +23,12 @@ class RecruitmentService {
     return createRecruitmentData;
   }
 
-  public async findAllRecruits(): Promise<CreateRecruiterApplicationDTO[]> {
-    const recruits: RecruitmentFormData[] = await Recruitments.query().select().from('recruits').where('recruiter', '=', "");
+  public async findAllRecruits(bop: string): Promise<CreateRecruiterApplicationDTO[]> {
+    let recruits: RecruitmentFormData[] = await Recruitments.query().select().from('recruits').where('recruiter', '=', "");
+
+    if(bop !== ""){
+      recruits = await Recruitments.query().select().from('recruits').where('recruiter', '=', "").where('bop', '=', bop);
+    }
     return recruits;
   }
 
