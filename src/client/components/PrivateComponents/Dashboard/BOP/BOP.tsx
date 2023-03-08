@@ -26,6 +26,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import Moment from 'moment';
 
 const style = {
   position: "absolute" as "absolute",
@@ -51,7 +52,6 @@ const BOP: React.FC = () => {
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [data, setData] = React.useState([]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -64,15 +64,19 @@ const BOP: React.FC = () => {
     setPage(0);
   };
 
-  
+  const [rowsData, setRowsData] = React.useState([]);
+   
   const handleSubmitCreateForm = async () => {
     createBop({
       "name": name,
       "date": date,
       "venue": venue
     });
+    await getBops().then((response: any) => {
+      setRowsData(rowsFunction(response))
+    })
     handleClose()
-  }
+  }   
 
   interface Column {
     id:
@@ -95,46 +99,46 @@ const BOP: React.FC = () => {
     name: string;
     date: string;
     venue: string;
+    id: string;
   }
 
   function createData(
     name: string,
     date: string,
     venue: string,
+    id: string,
   ): Data {
     return {
       name,
       date,
       venue,
+      id,
     };
   }
 
   React.useEffect(() => {
-    async function fetchDataAsync() {
-      await getBops();
-      const savedArray = JSON.parse(localStorage.getItem('bopList') || '[]');
-      setData(savedArray);
+    async function fetch(){
+      await getBops().then((response: any) => {
+        setRowsData(rowsFunction(response))
+      })
     }
-    fetchDataAsync();
+    fetch();
   }, []);
 
-
-  const rowsFunction = () => {
-    let newArray = [];
+  const rowsFunction = (data: []) => {
+    let newArray: any = [];
     if(data.length > 0){
       for(let i = 0; i < data.length; i++){
-        console.log(i)
         newArray.push(createData(
           data[i]['name'],
+          Moment(data[i]['date']).format('d MMM YYYY hh:mm:ss A'),
           data[i]['venue'],
-          data[i]['date'],
+          data[i]['id']
         ))
       }
     }
     return newArray;
   }
-  
-  const rowsData = rowsFunction();
 
   return (
     <>
@@ -168,7 +172,7 @@ const BOP: React.FC = () => {
                 variant="h6"
                 component="h2"
               >
-                Add new BOP
+                BOP Module
               </Typography>
               <Typography
                 variant="body2"
@@ -251,9 +255,9 @@ const BOP: React.FC = () => {
           <Grid item md={2}>
             <FormControl fullWidth margin="normal">
               <Button
-                style={{ textTransform: "none" }}
+                style={{ height: '58px', width: '100%', }}
                 size="large"
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 onClick={handleOpen}
                 fullWidth
@@ -284,7 +288,7 @@ const BOP: React.FC = () => {
                       hover
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.name}
+                      key={row['id']}
                     >
                       {columns.map((column) => {
                         const value = row[column.id];

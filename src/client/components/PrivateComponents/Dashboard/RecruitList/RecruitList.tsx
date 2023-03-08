@@ -17,14 +17,15 @@ import TextField from "@mui/material/TextField";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import Fade from "@mui/material/Fade";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
   getRecruits, assignAgent
 } from '../../../../http/recruitment/RecruitmentAPI';
-import Select from "@mui/material/Select";
+import {
+  getBops, 
+} from '../../../../http/bop/BopAPI';
 import Swal from 'sweetalert2'
+import Moment from 'moment';
 import { useStyles } from "./Styles";
 
 const style = {
@@ -57,23 +58,36 @@ const RecruitList: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const updateAgent = () => {
+  const [rowsData, setRowsData] = React.useState([]);
+  const [dropDownList, setDataDropdownList] = React.useState([]);
+
+  const updateAgent = async () => {
     setOpenModal(false);
+    let isConfirmed = false;
     Swal.fire({
       text: "Are you sure that you want to assign this applicant to this agent ?",
       icon: 'info',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes'
+      confirmButtonText: 'Yes',
+      preConfirm: async () => {
+        try {
+          await assignAgent(recruitID, agent)
+          await getRecruits().then((response: any) => {
+            console.log(response)
+            setRowsData(rowsFunction(response))
+          })
+        } catch (error) {
+          Swal.showValidationMessage(`An error occurred: ${error}`);
+        }
+      }
     }).then((result) => {
-      if (result.isConfirmed) {
-        assignAgent(recruitID, agent)
-        window.location.reload();
-      } else {
+      if (!result.isConfirmed) {
         setOpenModal(true);
       }
     })
+
   }
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -86,8 +100,6 @@ const RecruitList: React.FC = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  const [data, setData] = React.useState([]);
 
   interface Column {
     id:
@@ -177,23 +189,25 @@ const RecruitList: React.FC = () => {
   }
 
   React.useEffect(() => {
-    async function fetchDataAsync() {
-      await getRecruits();
-      const savedArray = JSON.parse(localStorage.getItem('recruitList') || '[]');
-      setData(savedArray);
+    async function fetch(){
+      await getRecruits().then((response: any) => {
+        setRowsData(rowsFunction(response))
+      })
+      await getBops().then((response: any) => {
+        setDataDropdownList(createBopDropdownData(response))
+      })
     }
-
-    fetchDataAsync();
+    fetch();
   }, []);
 
-  const rowsFunction = () => {
-    let newArray = [];
+  const rowsFunction = (data: []) => {
+    let newArray: any = [];
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         newArray.push(createData(
           data[i]['id'],
           `${data[i]['first_name']} ${data[i]['middle_name']} ${data[i]['last_name']}`,
-          data[i]['created_at'],
+          Moment(data[i]['created_at']).format('d MMM YYYY hh:mm:ss A'),
           data[i]['recruiter'] === "" || data[i]['recruiter'] === null ? "N/A" : data[i]['recruiter'],
           data[i]['branch'],
           data[i]['mobile_number'],
@@ -206,7 +220,16 @@ const RecruitList: React.FC = () => {
     return newArray;
   }
 
-  const rowsData = rowsFunction();
+  
+  const createBopDropdownData = (data: []) => {
+    let newArray: any = [];
+    if(data.length > 0){
+      for(let i = 0; i < data.length; i++){
+        newArray.push(data[i]['name'])
+      }
+    }
+    return newArray;
+  }
 
   return (
     <>
@@ -308,21 +331,33 @@ const RecruitList: React.FC = () => {
           have applied for open positions within your organization.
         </Typography>
         <Divider style={{ marginTop: 15, marginBottom: 15 }} />
-        <Grid container>
+        <Grid spacing={2} container>
           <Grid item xs={12} md={3}>
             <FormControl margin="normal" fullWidth>
               <Autocomplete
                 disablePortal
                 id="bop"
-                options={["BOP 1", "BOP 2"]}
+                options={dropDownList}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     label="Filter by BOP"
-                    variant="standard"
                   />
                 )}
               />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <FormControl fullWidth margin="normal">
+              <Button
+                style={{ height: '57px', width: '100%', }}
+                size="large"
+                variant="outlined"
+                color="primary"
+                fullWidth
+              >
+              Filter List
+              </Button>
             </FormControl>
           </Grid>
         </Grid>

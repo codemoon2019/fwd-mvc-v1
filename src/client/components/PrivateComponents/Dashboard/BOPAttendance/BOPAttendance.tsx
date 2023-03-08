@@ -1,11 +1,9 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import Backdrop from "@mui/material/Backdrop";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,19 +12,19 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
-import Modal from "@mui/material/Modal";
-import Button from "@mui/material/Button";
-import Fade from "@mui/material/Fade";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 import Autocomplete from "@mui/material/Autocomplete";
+import Button from "@mui/material/Button";
 import {
   getRecruits, assignAgent, markPresent
 } from '../../../../http/recruitment/RecruitmentAPI';
+import {
+  getBops, 
+} from '../../../../http/bop/BopAPI';
 import Select from "@mui/material/Select";
 import Swal from 'sweetalert2'
 import { useStyles } from "./Styles";
 import RecruitList from "../RecruitList/RecruitList";
+import Moment from 'moment';
 
 const style = {
   position: "absolute" as "absolute",
@@ -51,6 +49,7 @@ const BOPAttendance: React.FC = () => {
 
   const handleOpen = (id: number) => {
     setOpenModal(false);
+    setRecruitID(id)
     Swal.fire({
       text: "Are you sure that you want to mark this agent as present ?",
       icon: 'info',
@@ -68,12 +67,14 @@ const BOPAttendance: React.FC = () => {
         Swal.close()
       }
     })
-    setRecruitID(id)
   };
   const handleClose = () => setOpenModal(false);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  
+  const [rowsData, setRowsData] = React.useState([]);
+  const [dropDownList, setDataDropdownList] = React.useState([]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -185,24 +186,26 @@ const BOPAttendance: React.FC = () => {
   }
 
   React.useEffect(() => {
-    async function fetchDataAsync() {
-      await getRecruits();
-      const savedArray = JSON.parse(localStorage.getItem('recruitList') || '[]');
-      setData(savedArray);
-      console.log(savedArray)
+    async function fetch(){
+      await getRecruits().then((response: any) => {
+        setRowsData(rowsFunction(response))
+      })
+      await getBops().then((response: any) => {
+        setDataDropdownList(createBopDropdownData(response))
+      })
     }
-    fetchDataAsync();
+    fetch();
   }, []);
 
-  const rowsFunction = () => {
-    let newArray = [];
+  const rowsFunction = (data: []) => {
+    let newArray: any = [];
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         console.log(i)
         newArray.push(createData(
           data[i]['id'],
           `${data[i]['first_name']} ${data[i]['middle_name']} ${data[i]['last_name']}`,
-          data[i]['created_at'],
+          Moment(data[i]['created_at']).format('d MMM YYYY hh:mm:ss A'),
           data[i]['recruiter'] === "" || data[i]['recruiter'] === null ? "N/A" : data[i]['recruiter'],
           data[i]['branch'],
           data[i]['mobile_number'],
@@ -216,7 +219,15 @@ const BOPAttendance: React.FC = () => {
     return newArray;
   }
 
-  const rowsData = rowsFunction();
+  const createBopDropdownData = (data: []) => {
+    let newArray: any = [];
+    if(data.length > 0){
+      for(let i = 0; i < data.length; i++){
+        newArray.push(data[i]['name'])
+      }
+    }
+    return newArray;
+  }
 
   return (
     <>
@@ -231,7 +242,7 @@ const BOPAttendance: React.FC = () => {
         padding={2}
       >
         <Typography component="h1" variant="h5">
-          Recruit List
+          BOP Attendance
         </Typography>
         <Typography
           variant="body2"
@@ -242,21 +253,33 @@ const BOPAttendance: React.FC = () => {
           have applied for open positions within your organization.
         </Typography>
         <Divider style={{ marginTop: 15, marginBottom: 15 }} />
-        <Grid container>
+        <Grid spacing={2} container>
           <Grid item xs={12} md={3}>
             <FormControl margin="normal" fullWidth>
               <Autocomplete
                 disablePortal
                 id="bop"
-                options={["BOP 1", "BOP 2"]}
+                options={dropDownList}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     label="Filter by BOP"
-                    variant="standard"
                   />
                 )}
               />
+            </FormControl>
+          </Grid>
+          <Grid item md={2}>
+            <FormControl fullWidth margin="normal">
+              <Button
+                style={{ height: '57px', width: '100%', }}
+                size="large"
+                variant="outlined"
+                color="primary"
+                fullWidth
+              >
+              Filter List
+              </Button>
             </FormControl>
           </Grid>
         </Grid>

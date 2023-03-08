@@ -21,8 +21,8 @@ const EmailField: React.FC<EmailFieldProps> = ({
   return (
     <FormControl margin="normal" fullWidth error={Boolean(email.error)}>
       <TextField
-        placeholder={textFieldVariant === "outlined" ? "Email" : ""}
-        label={textFieldVariant !== "outlined" && "Email"}
+        placeholder={textFieldVariant === "outlined" ? "User ID" : ""}
+        label={textFieldVariant !== "outlined" && "User ID"}
         error={Boolean(email.error)}
         variant={"outlined"}
         value={email.text}

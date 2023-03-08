@@ -67,7 +67,7 @@ class App {
     });
     routes.forEach(route => {
       console.log(route)
-      this.app.use('api/', route.router);
+      this.app.use('/', route.router);
     });
   }
 

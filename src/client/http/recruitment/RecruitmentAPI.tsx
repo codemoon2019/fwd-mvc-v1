@@ -26,8 +26,8 @@ export const postApplication = async (recruitData: RecruitmentFormData) => {
 
 } 
 
-export const assignAgent = (id: number, agent: string) => {
-    axios
+export const assignAgent = async (id: number, agent: string) => {
+    return await axios
         .put(`/smart-recruitment/api/recruitment/assign-agent/${id}`, {recruiter: agent})
         .then((response) => {
             const data = response.data;
@@ -43,10 +43,10 @@ export const assignAgent = (id: number, agent: string) => {
 
 export const markPresent = async (id: number) => {
     return axios
-        .put(`/smart-recruitment/api/recruitment/mark-present/${id}`)
+        .post(`/smart-recruitment/api/recruitment/mark-present`, {id: id})
         .then((response) => {
             const data = response.data;
-            return response
+            return data
         })
         .catch((error) => {
             Swal.fire({
@@ -56,39 +56,21 @@ export const markPresent = async (id: number) => {
         });
 } 
 
+export const getRecruits = async () => {
+    try {
+        const response = await axios.post(`/smart-recruitment/api/recruitment/list`)
+        return response.data.data
+    } catch (error) {
+        return error
+    }
+}
 
-export const getRecruits = () => {
-    axios
-    .post(`/smart-recruitment/api/recruitment/list`)
-    .then((response) => {
-      const data = response.data;
-      localStorage.removeItem('recruitList');
-      localStorage.setItem('recruitList', JSON.stringify(data.data));
-      console.log(data.data)
-      return data.data;
-    })
-    .catch((error) => {
-        Swal.fire({
-            text: error.response.data.message,
-            icon: 'error',
-        })
-    });
-} 
 
-export const getAssignedRecruits = () => {
-    axios
-    .post(`/smart-recruitment/api/recruitment/assigned-list`)
-    .then((response) => {
-      const data = response.data;
-      localStorage.removeItem('recruitAssignedList');
-      localStorage.setItem('recruitAssignedList', JSON.stringify(data.data));
-      console.log(data.data)
-      return data.data;
-    })
-    .catch((error) => {
-        Swal.fire({
-            text: error.response.data.message,
-            icon: 'error',
-        })
-    });
-} 
+export const getAssignedRecruits = async (from: any, to: any) => {
+    try {
+        const response = await axios.post(`/smart-recruitment/api/recruitment/assigned-list`, {from: from, to: to})
+        return response.data.data
+    } catch (error) {
+        return error
+    }
+}

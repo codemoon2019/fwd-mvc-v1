@@ -18,7 +18,7 @@ class RecruitmentRoute implements Routes {
     this.router.post(`${this.path}/list`, this.recruitmentController.getAllRecruits);
     this.router.post(`${this.path}/assigned-list`, this.recruitmentController.getAllAssignedRecruits);
     this.router.put(`${this.path}/assign-agent/:id(\\d+)`, this.recruitmentController.assignAgent);
-    this.router.put(`${this.path}/mark-present/:id(\\d+)`, this.recruitmentController.markPresent);
+    this.router.post(`${this.path}/mark-present`, this.recruitmentController.markPresent);
   }
 }
 

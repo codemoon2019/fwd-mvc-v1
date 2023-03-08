@@ -21,10 +21,12 @@ import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import Moment from 'moment';
+import { useStyles } from "./Styles";
 
 const Reports: React.FC = () => {
-    const [recruitID, setRecruitID] = React.useState(0);
-    const [date, setDate] = React.useState<Dayjs | null>(dayjs('2022-04-07'));
+    const [fromDate, setFromDate] = React.useState<Dayjs | null>(dayjs());
+    const [toDate, setToDate] = React.useState<Dayjs | null>(dayjs().add(30, 'day'));
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -39,7 +41,13 @@ const Reports: React.FC = () => {
         setPage(0);
     };
 
-    const [data, setData] = React.useState([]);
+    const onClickFilter = async () => {
+        await getAssignedRecruits(fromDate, toDate).then((response: any) => {
+            setRowsData(rowsFunction(response))
+        })
+    }
+
+    const [rowsData, setRowsData] = React.useState([]);
 
     interface Column {
         id:
@@ -129,18 +137,16 @@ const Reports: React.FC = () => {
     }
 
     React.useEffect(() => {
-        async function fetchDataAsync() {
-            await getAssignedRecruits();
-            const savedArray = JSON.parse(
-                localStorage.getItem("recruitAssignedList") || "[]"
-            );
-            setData(savedArray);
+        async function fetch() {
+            await getAssignedRecruits(fromDate, toDate).then((response: any) => {
+                setRowsData(rowsFunction(response))
+            })
         }
-        fetchDataAsync();
+        fetch();
     }, []);
 
-    const rowsFunction = () => {
-        let newArray = [];
+    const rowsFunction = (data: []) => {
+        let newArray: any = [];
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 console.log(i);
@@ -163,8 +169,6 @@ const Reports: React.FC = () => {
         }
         return newArray;
     };
-
-    const rowsData = rowsFunction();
 
     return (
         <>
@@ -192,45 +196,52 @@ const Reports: React.FC = () => {
                 <Divider style={{ marginTop: 15, marginBottom: 15 }} />
                 <TableContainer>
                     <Grid container spacing={2} top={5}>
-                        <Grid item md={5}>
+                        <Grid item md={4}>
                             <FormControl margin="normal" fullWidth>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DateTimePicker
                                         renderInput={(props) => <TextField {...props} />}
                                         label="From"
-                                        value={date}
+                                        value={fromDate}
                                         onChange={(newValue) => {
-                                            setDate(newValue);
+                                            setFromDate(newValue);
                                         }}
                                     />
                                 </LocalizationProvider>
                             </FormControl>
                         </Grid>
-                        <Grid item md={5}>
+                        <Grid item md={4}>
                             <FormControl margin="normal" fullWidth>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DateTimePicker
                                         renderInput={(props) => <TextField {...props} />}
                                         label="To"
-                                        value={date}
+                                        value={toDate}
                                         onChange={(newValue) => {
-                                            setDate(newValue);
+                                            setToDate(newValue);
                                         }}
                                     />
                                 </LocalizationProvider>
                             </FormControl>
                         </Grid>
                         <Grid item md={2}>
-                        <FormControl margin="normal" fullWidth>
-                            <CSVLink
-                                data={rowsData}
-                                style={{ textDecoration: "none" }}
-                                filename={"myTable.csv"}
-                            >
-                                <Button variant="outlined" style={{height:'58px', width:'100%',}} color="warning">
-                                    Download CSV
+                            <FormControl margin="normal" fullWidth>
+                                <Button onClick={onClickFilter} variant="outlined" style={{ height: '58px', width: '100%', }} color="warning">
+                                    Filter List
                                 </Button>
-                            </CSVLink>
+                            </FormControl>
+                        </Grid>
+                        <Grid item md={2}>
+                            <FormControl margin="normal" fullWidth>
+                                <CSVLink
+                                    data={rowsData}
+                                    style={{ textDecoration: "none" }}
+                                    filename={"myTable.csv"}
+                                >
+                                    <Button variant="outlined" style={{ height: '58px', width: '100%', }} color="warning">
+                                        Download CSV
+                                    </Button>
+                                </CSVLink>
                             </FormControl>
                         </Grid>
                     </Grid>
@@ -273,7 +284,7 @@ const Reports: React.FC = () => {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-            </Grid>
+            </Grid >
         </>
     );
 };

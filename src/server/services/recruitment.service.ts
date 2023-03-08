@@ -28,8 +28,8 @@ class RecruitmentService {
     return recruits;
   }
 
-  public async findAllAssignedRecruits(): Promise<CreateRecruiterApplicationDTO[]> {
-    const recruits: RecruitmentFormData[] = await Recruitments.query().select().from('recruits').where('recruiter', '!=', "");
+  public async findAllAssignedRecruits(from: string, to: string): Promise<CreateRecruiterApplicationDTO[]> {
+    const recruits: RecruitmentFormData[] = await Recruitments.query().select().from('recruits').where('recruiter', '!=', "").whereBetween('created_at', [from, to]);;
     return recruits;
   }
 

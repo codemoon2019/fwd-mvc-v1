@@ -29,7 +29,7 @@ class RecruitmentController {
 
   public getAllAssignedRecruits = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const findAllAssignedRecruits = await this.recruitmentService.findAllAssignedRecruits();
+      const findAllAssignedRecruits = await this.recruitmentService.findAllAssignedRecruits(req.body.from, req.body.to);
 
       res.status(200).json({ data: findAllAssignedRecruits, message: 'findAllAssignedRecruits' });
     } catch (error) {
@@ -50,7 +50,7 @@ class RecruitmentController {
 
   public markPresent = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const recruitId = Number(req.params.id);
+      const recruitId = Number(req.body.id);
       const assignAgent = await this.recruitmentService.markPresent(recruitId);
 
       res.status(200).json({ data: assignAgent, message: 'markPresent' });
