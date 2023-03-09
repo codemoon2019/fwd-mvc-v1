@@ -30,6 +30,9 @@ import {
 import {
   getBopDataForDropdown,
 } from '../../../http/bop/BopAPI';
+import {
+  getSrpBranchList
+} from '../../../http/srpBranchList/SrpBranchListAPI'
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -57,6 +60,10 @@ interface RecruitmentForm {
   bop: string;
   recruiter: string;
   branch: string;
+}
+
+type BranchListData = {
+  label: string;
 }
 
 const initialValues: RecruitmentForm = {
@@ -172,6 +179,7 @@ const Login: React.FC = () => {
   const [success, setSuccess] = React.useState(false);
 
   const [bopList, setBopList] = React.useState<string[]>([]);
+  const [referrerBranchList, setReferrerBranchList] = React.useState<BranchListData[]>([]);
 
   //Form Data
   const [province, setProvince] = React.useState<string[]>([]);
@@ -232,6 +240,25 @@ const Login: React.FC = () => {
     fetchDataAsync();*/
 
 
+  }, [])
+
+  React.useEffect(() => {
+    getSrpBranchList()
+      .then(data => {
+        const labelData = data.map(d => {
+          return {
+            "label": d["BRANCH"]
+          }
+        })
+
+        setReferrerBranchList(labelData)
+      })
+      .catch(error => {
+        Swal.fire({
+          text: error.response.data.message,
+          icon: 'error',
+        })
+      })
   }, [])
 
   return (<>
@@ -563,11 +590,7 @@ const Login: React.FC = () => {
                           onInputChange={(event, newInputValue) => {
                             formik.setFieldValue("branch", newInputValue);
                           }}
-                          options={[
-                            { label: "Branch 1" },
-                            { label: "Branch 2" },
-                            { label: "Branch 3" },
-                          ]}
+                          options={referrerBranchList}
                           renderInput={(params) => (
                             <TextField
                               className={classes.root}
