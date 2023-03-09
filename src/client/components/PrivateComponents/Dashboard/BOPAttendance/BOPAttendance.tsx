@@ -216,11 +216,11 @@ const BOPAttendance: React.FC = () => {
           `${data[i]['first_name']} ${data[i]['middle_name']} ${data[i]['last_name']}`,
           Moment(data[i]['created_at']).format('d MMM YYYY hh:mm:ss A'),
           data[i]['recruiter'] === "" || data[i]['recruiter'] === null ? "N/A" : data[i]['recruiter'],
-          data[i]['branch'],
+          data[i]['branch'] === "" || data[i]['branch'] === null ? "N/A" : data[i]['branch'],
           data[i]['mobile_number'],
           `${data[i]['province']}, ${data[i]['city']}`,
           data[i]['email'],
-          data[i]['bop'],
+          data[i]['bop'] === "" || data[i]['bop'] === null ? "N/A" : data[i]['bop'],
           data[i]['isPresent'] === null ? "No" : "Yes",
         ))
       }

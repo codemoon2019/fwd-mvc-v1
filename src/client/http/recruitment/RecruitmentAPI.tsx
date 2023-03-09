@@ -27,8 +27,10 @@ export const postApplication = async (recruitData: RecruitmentFormData) => {
 } 
 
 export const assignAgent = async (id: number, agent: string) => {
+    const agentObject = agent.split(' - ');
+    
     return await axios
-        .put(`/smart-recruitment/api/recruitment/assign-agent/${id}`, {recruiter: agent})
+        .put(`/smart-recruitment/api/recruitment/assign-agent/${id}`, {recruiter: agentObject[0]})
         .then((response) => {
             const data = response.data;
             return response

@@ -158,11 +158,15 @@ const Reports: React.FC = () => {
                         data[i]["recruiter"] === "" || data[i]["recruiter"] === null
                             ? "N/A"
                             : data[i]["recruiter"],
-                        data[i]["branch"],
+                            data[i]["branch"] === "" || data[i]["branch"] === null
+                            ? "N/A"
+                            : data[i]["branch"],
                         data[i]["mobile_number"],
                         `${data[i]["province"]}, ${data[i]["city"]}`,
                         data[i]["email"],
-                        data[i]["bop"]
+                        data[i]["bop"] === "" || data[i]["bop"] === null
+                        ? "N/A"
+                        : data[i]["bop"],
                     )
                 );
             }

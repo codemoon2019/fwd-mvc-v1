@@ -24,6 +24,9 @@ import {
 import {
   getBops,
 } from '../../../../http/bop/BopAPI';
+import {
+  getAgentList,
+} from '../../../../http/agent/AgentAPI';
 import Swal from 'sweetalert2'
 import Moment from 'moment';
 import { useStyles } from "./Styles";
@@ -62,6 +65,7 @@ const RecruitList: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+  const [agentList, setAgentList] = React.useState([]);
   const [rowsData, setRowsData] = React.useState([]);
   const [dropDownList, setDataDropdownList] = React.useState([]);
 
@@ -206,6 +210,9 @@ const RecruitList: React.FC = () => {
       await getBops().then((response: any) => {
         setDataDropdownList(createBopDropdownData(response))
       })
+      await getAgentList().then((response: any) => {
+        setAgentList(response)
+      })
     }
     fetch();
   }, []);
@@ -219,11 +226,11 @@ const RecruitList: React.FC = () => {
           `${data[i]['first_name']} ${data[i]['middle_name']} ${data[i]['last_name']}`,
           Moment(data[i]['created_at']).format('d MMM YYYY hh:mm:ss A'),
           data[i]['recruiter'] === "" || data[i]['recruiter'] === null ? "N/A" : data[i]['recruiter'],
-          data[i]['branch'],
+          data[i]['branch'] === "" || data[i]['branch'] === null ? "N/A" : data[i]['branch'],
           data[i]['mobile_number'],
           `${data[i]['province']}, ${data[i]['city']}`,
           data[i]['email'],
-          data[i]['bop'],
+          data[i]['bop'] === "" || data[i]['bop'] === null ? "N/A" : data[i]['bop']
         ))
       }
     }
@@ -292,11 +299,7 @@ const RecruitList: React.FC = () => {
                       onInputChange={(event, newInputValue) => {
                         setAgent(newInputValue);
                       }}
-                      options={[
-                        "Agent 1",
-                        "Agent 2",
-                        "Agent 3",
-                      ]}
+                      options={agentList}
                       renderInput={(params) => (
                         <TextField
                           className={classes.root}

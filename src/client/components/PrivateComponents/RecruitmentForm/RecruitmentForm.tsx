@@ -131,7 +131,7 @@ const validationSchema = yup.object({
 });
 
 
-const Login: React.FC = () => {
+const RecruitmentForm: React.FC = () => {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -654,4 +654,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default RecruitmentForm;
