@@ -20,4 +20,7 @@ export const {
     GEN_API_URL,
     GEN_API_USER,
     GEN_API_PASSWORD,
+    AUTH_API_URL,
+    AUTH_API_USER,
+    AUTH_API_PASSWORD,
 } = process.env;

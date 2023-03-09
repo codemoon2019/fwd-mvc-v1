@@ -7,6 +7,7 @@ import { DataStoredInToken, TokenData } from './../interfaces/auth.interface';
 import { User } from './../interfaces/users.interface';
 import { Users } from './../models/users.model';
 import { isEmpty } from './../utils/util';
+import createAuthApiInstance from '../utils/createAuthApiInstance';
 
 class AuthService {
   public async signup(userData: CreateUserDto): Promise<User> {

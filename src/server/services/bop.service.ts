@@ -17,14 +17,15 @@ class BOPService {
       }
 
       public async findAllBop(): Promise<CreateBOPDTO[]> {
-        const users: BOP[] = await BOPModel.query().select().from('bop').orderBy('date', 'desc');
-        return users;
+        const bops: BOP[] = await BOPModel.query().select().from('bop').orderBy('date', 'desc');
+        return bops;
       }
 
       public async findAllBopFilterByCurrentDate(): Promise<CreateBOPDTO[]> {
         const today = new Date();
-        const users: BOP[] = await BOPModel.query().select().from('bop').where('date', '>=', today).orderBy('date');
-        return users;
+        const bops: BOP[] = await BOPModel.query().select().from('bop').where('date', '>=', today).orderBy('date');
+        console.log(bops)
+        return bops;
       }
 
 }

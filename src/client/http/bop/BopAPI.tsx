@@ -30,8 +30,16 @@ export const getBops = async () => {
 
 export const getBopDataForDropdown = async () => {
     try {
+        const newArray: any = [];
         const response = await axios.post(`/smart-recruitment/api/bop/list-dropdown`)
-        return response.data.data
+        const data = response.data.data;
+        if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                const item = data[i];
+                newArray.push(item.name)
+            }
+        }
+        return newArray
     } catch (error) {
         return error
     }

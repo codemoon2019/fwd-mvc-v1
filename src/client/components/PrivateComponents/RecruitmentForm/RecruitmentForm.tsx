@@ -230,15 +230,13 @@ const Login: React.FC = () => {
 
   React.useEffect(() => {
     setProvince(Object.keys(data.data))
-    /*async function fetchDataAsync() {
-      await getBopDataForDropdown();
-      const savedArray = JSON.parse(localStorage.getItem('bopListDropdown') || '[]');
-      setBopList(savedArray);
-      console.log(bopList)
+
+    async function fetch() {
+      await getBopDataForDropdown().then((response: any) => {
+        setBopList(response)
+      })
     }
-
-    fetchDataAsync();*/
-
+    fetch();
 
   }, [])
 
