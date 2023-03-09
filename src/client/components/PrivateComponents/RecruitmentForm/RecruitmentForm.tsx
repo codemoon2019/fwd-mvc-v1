@@ -83,15 +83,15 @@ const initialValues: RecruitmentForm = {
 
 const validationSchema = yup.object({
   lastName: yup.string()
-    .matches(/^[a-zA-Z]+$/, 'This field must contain only letters')
+    .matches(/^[a-zA-Z ]+$/, 'This field must contain only letters')
     .max(15, "Must be 15 characters or less")
     .required("This field is required"),
   firstName: yup.string()
-    .matches(/^[a-zA-Z]+$/, 'This field must contain only letters')
+    .matches(/^[a-zA-Z ]+$/, 'This field must contain only letters')
     .max(15, "Must be 15 characters or less")
     .required("This field is required"),
   middleName: yup.string()
-    .matches(/^[a-zA-Z]+$/, 'This field must contain only letters')
+    .matches(/^[a-zA-Z ]+$/, 'This field must contain only letters')
     .max(15, "Must be 15 characters or less")
     .required("This field is required"),
   province: yup.string()
@@ -334,8 +334,7 @@ const Login: React.FC = () => {
                   color="textSecondary"
                   style={{ cursor: "pointer" }}
                 >
-                  Fill in the name and contact information in the designated
-                  fields.
+                  The personal data collected shall be used by FWD life Insurance, its agents, employees, and representatives, to set an appointment for meeting, requests for training and other recruitment activities with you. To know more how we process your data, please read our Privacy Policy (linked to Alex Privacy Policy).
                 </Typography>
                 <Divider style={{ marginTop: 15, marginBottom: 15, background: "#e87722" }} />
                 <Grid container spacing={2} top={5}>

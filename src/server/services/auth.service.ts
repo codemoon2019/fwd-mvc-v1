@@ -13,8 +13,8 @@ class AuthService {
   public async signup(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "userData is empty");
 
-    const findUser: Users = await Users.query().select().from('users').where('email', '=', userData.email).first();
-    if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
+    const findUser: Users = await Users.query().select().from('users').where('userid', '=', userData.email).first();
+    if (findUser) throw new HttpException(409, `This userid ${userData.email} already exists`);
 
     const hashedPassword = await hash(userData.password, 10);
     const createUserData: User = await Users.query()
@@ -27,16 +27,28 @@ class AuthService {
   public async login(userData: CreateUserDto): Promise<{ cookie: string; tokenData: string; findUser: User }> {
     if (isEmpty(userData)) throw new HttpException(400, "userData is empty");
 
-    const findUser: User = await Users.query().select().from('users').where('email', '=', userData.email).first();
-    if (!findUser) throw new HttpException(409, `Invalid email or password.`);
+    const findUser: User = await Users.query().select().from('users').where('userid', '=', userData.email).first();
+    if (!findUser) throw new HttpException(409, `Invalid credentials.`);
 
-    const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
-    if (!isPasswordMatching) throw new HttpException(409, `Invalid email or password.`);
+    const authApi = createAuthApiInstance();
 
-    const tokenData: any = this.createToken(findUser);
-    const cookie = this.createCookie(tokenData);
+    return new Promise((resolve, reject) => {
+      authApi.post('/', {USERID: userData.email, PASSWORD: userData.password})
+      .then((response) => {
+        const serverResponse = response.data
+        console.log(serverResponse)
+        const tokenData: any = this.createToken(findUser);
+        const cookie = this.createCookie(tokenData);
+        if(serverResponse.STATUS === "00"){
+          resolve({ cookie, tokenData, findUser })
+        }else{
+          throw new HttpException(409, `Invalid credentials.`);
+        }
+      }).catch(error => {
+        reject(error)
+      })
+    })
 
-    return { cookie, tokenData, findUser };
   }
 
   public async logout(userData: User): Promise<User> {
