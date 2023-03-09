@@ -1,4 +1,5 @@
 import App from './app';
+import AgentRoute from './routes/agent.route';
 import AuthRoute from './routes/auth.route';
 import IndexRoute from './routes/index.route';
 import BOPRoute from './routes/bop.route';
@@ -16,6 +17,7 @@ const app = new App([
     new RecruitmentRoute(),
     new BOPRoute(),
     new SrpBranchListRoute(),
+    new AgentRoute()
 ]);
 
 app.listen();

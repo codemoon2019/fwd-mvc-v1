@@ -23,4 +23,7 @@ export const {
     AUTH_API_URL,
     AUTH_API_USER,
     AUTH_API_PASSWORD,
+    AGENT_API_URL,
+    AGENT_API_USER,
+    AGENT_API_PASSWORD
 } = process.env;
