@@ -13,6 +13,7 @@ class AgentRoute implements Routes {
 
   private initializeRoutes() {
     this.router.post(`${this.path}/list`, this.agentController.getAgentList);
+    this.router.post(`${this.path}/agentDetails`, this.agentController.getAgentDetails)
   }
 }
 

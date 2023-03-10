@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { RecruitmentFormData } from '../../interface/Recruitment/RecruitmentApplication';
 import Swal from 'sweetalert2'
+import { GetAgentDetailsFormData, AgentDetail } from '../../interface/Agent'
 
 export const postApplication = async (recruitData: RecruitmentFormData) => {
     Swal.fire({
@@ -28,12 +29,33 @@ export const postApplication = async (recruitData: RecruitmentFormData) => {
 
 export const assignAgent = async (id: number, agent: string) => {
     const agentObject = agent.split(' - ');
-    
-    return await axios
-        .put(`/smart-recruitment/api/recruitment/assign-agent/${id}`, {recruiter: agentObject[0]})
+
+    const getAgentDetailsFormData: GetAgentDetailsFormData = {
+        AGENTID: id.toString()
+    }
+    return axios.post(
+        '/smart-recruitment/api/agent/agentDetails', 
+        getAgentDetailsFormData
+        )
         .then((response) => {
-            const data = response.data;
-            return response
+            const agentDetail: AgentDetail = response.data[0]
+            
+            axios.put(
+                `/smart-recruitment/api/recruitment/assign-agent/${id}`, 
+                {
+                    recruiter: agentObject[0], 
+                    agentDetail
+                })
+                .then((response) => {
+                    const data = response.data;
+                    return response
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        text: error.response.data.message,
+                        icon: 'error',
+                    })
+                });
         })
         .catch((error) => {
             Swal.fire({
