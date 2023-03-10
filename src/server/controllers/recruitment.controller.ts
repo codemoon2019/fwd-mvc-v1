@@ -2,25 +2,39 @@ import { NextFunction, Request, Response } from 'express';
 import { CreateRecruiterApplicationDTO } from './../dtos/recruitment-form.dto';
 import recruitmentService from './../services/recruitment.service';
 import StrikeIronService from '../services/strikeiron.service';
+import CheckEmailAlexSrtService from '../services/checkEmailAlexSrt';
 import { StrikeIronFormData } from '../interfaces/strikeiron.interface';
+import { CheckEmailAlexSrtFormData } from '../interfaces/checkEmailAlexSrt.interface';
+import { HttpException } from '../exceptions/HttpException';
 
 class RecruitmentController {
   public recruitmentService = new recruitmentService();
   public strikeIronService = new StrikeIronService();
+  public checkEmailAlexSrtService = new CheckEmailAlexSrtService();
 
   public registerRecruit = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const recruitData: CreateRecruiterApplicationDTO = req.body;
-    const strikeIronData: StrikeIronFormData = {
-      "contactInfo": {
-        "emailAddress": recruitData.email,
-        "mobileNumber": recruitData.mobile_number
-      }
-    }
 
     try {
+      const checkEmailAlexSrtFormData : CheckEmailAlexSrtFormData = {
+        "recEmail": recruitData.email
+      }
+
+      const checkEmailAlexSrtResponse = await this.checkEmailAlexSrtService.checkEmailAlexSrt(checkEmailAlexSrtFormData);
+      if (checkEmailAlexSrtResponse.length === 0) {
+        throw new HttpException(400, 'Email is already registered to another user')
+      }
+
+      const strikeIronData: StrikeIronFormData = {
+        "contactInfo": {
+          "emailAddress": recruitData.email,
+          "mobileNumber": recruitData.mobile_number
+        }
+      }
+
       const strikeIronResponse = await this.strikeIronService.callStrikeIron(strikeIronData)
       if (strikeIronResponse.responseCode !== "000") {
-        throw new Error('Invalid email/mobile number')
+        throw new HttpException(400, 'Invalid email/mobile number')
       }
 
       const registeredRecruitData = await this.recruitmentService.registerRecruitInfo(recruitData);
