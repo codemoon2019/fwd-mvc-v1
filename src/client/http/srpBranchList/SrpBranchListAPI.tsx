@@ -2,7 +2,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { SrpBranchListResponse } from '../../interface/SrpBranchList'
 
-export const getSrpBranchList = (): Promise<SrpBranchListResponse[]> => {
+export const getSrpBranchList = (): Promise<SrpBranchListResponse> => {
     return new Promise((resolve, reject) => {
         axios.post(`/smart-recruitment/api/srpBranchList`)
             .then((response) => {
