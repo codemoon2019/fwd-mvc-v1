@@ -22,7 +22,8 @@ import RecruitList from "./RecruitList/RecruitList";
 import Reports from "./Reports/Reports";
 import Cookies from 'js-cookie';
 import Login from "../../Auths/Login/Login";
-
+import IdleUserDialog from "../../UI/Dialog/IdleUser";
+import { useIdleTimer } from "react-idle-timer"
 
 const style = {
   position: "absolute" as "absolute",
@@ -130,6 +131,16 @@ const DashBoard: React.FC<DashBoardProps> = (props) => {
   };
 
   const [auth, setAuth] = React.useState(false);
+  const [openIdleUserDialog, setOpenIdleUserDialog] = React.useState(false)
+
+  const { getRemainingTime } = useIdleTimer({
+    timeout: 1000 * 60 * 15,
+    onIdle: () => setOpenIdleUserDialog(true),
+  });
+
+  const handleCloseIdleUserDialog = () => {
+    setOpenIdleUserDialog(false)
+  }
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -227,6 +238,13 @@ const DashBoard: React.FC<DashBoardProps> = (props) => {
                 props.Page === "BOPAttendance" && <><BOPAttendance/></>
               }
             </Grid>
+            {
+              openIdleUserDialog && 
+              <IdleUserDialog 
+                open={openIdleUserDialog}
+                onClose={handleCloseIdleUserDialog}
+              />
+            }
           </Box>
         </Box>
       </ThemeProvider>) : (<>
