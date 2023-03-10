@@ -16,6 +16,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('bop', 255).nullable();
         table.boolean('isRecruit').notNullable();
         table.string('recruiter', 255).nullable();
+        table.text('recruiter_details').nullable();
         table.string('branch', 255).nullable();
         table.string('isPresent', 255).nullable();
         table.timestamps(true, true);

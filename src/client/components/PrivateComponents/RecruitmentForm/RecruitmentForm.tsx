@@ -103,7 +103,7 @@ const validationSchema = yup.object({
     .email('Enter a valid email')
     .required('Email is required'),
   phone: yup.string()
-    .matches(/^\d{11}$/, 'Phone number is not valid')
+    .matches(/^\d{12}$/, 'Phone number is not valid')
     .required('Phone number is required'),
   isToAttend: yup.mixed().oneOf(['Yes', 'No'], 'Please select an option'),
   bop: yup.string().test('bop-is-required', 'BOP is required', function (value) {

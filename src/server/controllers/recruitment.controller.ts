@@ -21,7 +21,7 @@ class RecruitmentController {
       }
 
       const checkEmailAlexSrtResponse = await this.checkEmailAlexSrtService.checkEmailAlexSrt(checkEmailAlexSrtFormData);
-      if (checkEmailAlexSrtResponse.length === 0) {
+      if (checkEmailAlexSrtResponse.length !== 0) {
         throw new HttpException(400, 'Email is already registered to another user')
       }
 
@@ -69,7 +69,7 @@ class RecruitmentController {
   public assignAgent = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const recruitId = Number(req.params.id);
-      const assignAgent = await this.recruitmentService.assignAgent(recruitId, req.body.recruiter);
+      const assignAgent = await this.recruitmentService.assignAgent(recruitId, req.body.recruiter, req.body.recruiter_details);
 
       res.status(200).json({ data: assignAgent, message: 'assignAgent' });
     } catch (error) {

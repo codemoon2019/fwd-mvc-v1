@@ -15,6 +15,7 @@ export class Recruitments extends Model implements RecruitmentFormData {
   bop!: string;
   isRecruit!: string;
   recruiter!: string;
+  recruiter_details!: string;
   branch!: string;
   isPresent!: string;
 

@@ -37,12 +37,12 @@ class RecruitmentService {
     return recruits;
   }
 
-  public async assignAgent(recruitId: number, recruiter: string): Promise<RecruitmentFormData> {
+  public async assignAgent(recruitId: number, recruiter: string, recruiter_details: string): Promise<RecruitmentFormData> {
     const findRecruit = await Recruitments.query().select().from('recruits').where('id', '=', recruitId);
     if (!findRecruit) throw new HttpException(409, "This recruit does not exist.");
 
     await Recruitments.query()
-      .update({ "recruiter": recruiter })
+      .update({ "recruiter": recruiter, "recruiter_details": recruiter_details })
       .where('id', '=', recruitId)
       .into('recruits');
 
